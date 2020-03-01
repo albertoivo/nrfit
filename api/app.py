@@ -2,16 +2,42 @@
 
 import os
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
+import crud
 from config import Config
 from models import DataFitness
-from util import get_date, get_time
+from util import get_date, get_duration, get_data
 
 app = Flask(__name__)
 app.config.from_object(Config)
 SQLAlchemy(app)
+
+
+@app.route('/', methods=['GET'])
+def get_all():
+    return crud.all()
+
+
+@app.route('/sport/<sport>', methods=['GET'])
+def by_sport(sport=""):
+    return crud.by_sport(sport)
+
+
+@app.route('/mean_kcal/<days>')
+def mean_kcal(days):
+    return crud.mean_kcal(days)
+
+
+@app.route('/mean_kcal/<sport>/<days>')
+def mean_kcal_by_sport(sport, days):
+    return crud.mean_kcal_by_sport(sport, days)
+
+
+@app.route('/mean_graph/<days>')
+def mean_graph(days):
+    return crud.mean_graph(days)
 
 
 @app.route('/add', methods=['POST'])
@@ -26,22 +52,20 @@ def add_fit_data():
             "heartrate": "143"
         }
     """
-    data = request.json
 
-    date = get_date(data)
-    sport = data['sport']
-    kcal = data['kcal']
-    duration = get_time(data['duration'])
-    distance = float(data['distance'])
-    hr = data['avg_heartrate']
+    date = get_date()
+    sport = get_data('sport')
+    kcal = int(get_data('kcal'))
+    duration = get_duration()
+    distance = float(get_data('distance'))
+    hr = get_data('avg_heartrate')
 
-    fit = DataFitness(date=date, sport=sport, kcal=kcal, distance=distance,
-                      duration=duration, avg_heartrate=hr)
+    fit = DataFitness(date=date, sport=sport, kcal=kcal, distance=distance, duration=duration, avg_heartrate=hr)
 
     fit.create()
 
     return jsonify({
-        'sucess': True
+        'success': True
     })
 
 

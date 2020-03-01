@@ -1,9 +1,11 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from config import Config
-from flask_migrate import Migrate
 from datetime import timedelta
-from util import get_time
+
+from flask import Flask
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+import datetime
+
+from config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -16,7 +18,7 @@ class DataFitness(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     sport = db.Column(db.String(30), nullable=False)
-    date = db.Column(db.DateTime(), nullable=False)
+    date = db.Column(db.Date(), nullable=False)
     kcal = db.Column(db.Integer)
     distance = db.Column(db.Float)
     duration = db.Column(db.Time())
@@ -25,8 +27,11 @@ class DataFitness(db.Model):
     avg_heartrate = db.Column(db.Float)
 
     def create(self):
-        self.avg_speed = round((self.distance / (timedelta(hours=self.duration.hour, minutes=self.duration.minute).total_seconds() / 3600)), 2)
-        self.pace = round(((timedelta(hours=self.duration.hour, minutes=self.duration.minute).total_seconds() / 60) / self.distance), 2)
+        hour = self.duration.hour
+        minute = self.duration.minute
+
+        self.avg_speed = round((self.distance / (timedelta(hours=hour, minutes=minute).total_seconds() / 3600)), 2)
+        self.pace = round(((timedelta(hours=hour, minutes=minute).total_seconds() / 60) / self.distance), 2)
 
         db.session.add(self)
         db.session.commit()
@@ -39,10 +44,12 @@ class DataFitness(db.Model):
     def serialize(self):
         return {
             'id': self.id,
-            'sport': self.sport,
             'date': self.date,
+            'sport': self.sport,
             'kcal': self.kcal,
             'duration': self.duration,
+            'distance': self.distance,
             'pace': self.pace,
-            'heart_rate': self.heart_rate
+            'avg_speed': self.avg_speed,
+            'avg_heartrate': self.avg_heartrate
         }

@@ -32,11 +32,11 @@ def add_fit_data():
     sport = data['sport']
     kcal = data['kcal']
     duration = get_time(data['duration'])
-    pace = get_time(data['pace'])
-    hr = data['heartrate']
+    distance = float(data['distance'])
+    hr = data['avg_heartrate']
 
-    fit = DataFitness(date=date, sport=sport, kcal=kcal,
-                      duration=duration, pace=pace, heart_rate=hr)
+    fit = DataFitness(date=date, sport=sport, kcal=kcal, distance=distance,
+                      duration=duration, avg_heartrate=hr)
 
     fit.create()
 

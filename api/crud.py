@@ -53,16 +53,28 @@ def mean_kcal_by_sport(sport, days):
     return df.to_json(orient='records')
 
 
-def mean_graph(days):
+def mean_kcal_by_days_graph(days):
     try:
         conn = sqlite3.connect('datafitness.db')
-        sql = 'select * from data_fitness order by date, sport'
+        sql = 'select kcal, date from data_fitness order by date, sport'
         df = pd.read_sql(sql, conn, index_col='date')
         column_name = 'Média dos últimos {} dias'.format(days)
         df[column_name] = round(df['kcal'].rolling(window=int(days)).mean(), 2)
         df[['kcal', column_name]].plot(figsize=(17, 6))
-        #df['date'] = df['date'].dt.strftime('%Y/%m/%d')
-        #plt.xticks(rotation=90)
+    finally:
+        conn.close()
+
+    return util.matplotlib_to_base64(plt)
+
+
+def mean_running_km_by_days(days):
+    try:
+        conn = sqlite3.connect('datafitness.db')
+        sql = 'select distance, date from data_fitness where sport=\'running\' order by date'
+        df = pd.read_sql(sql, conn, index_col='date')
+        column_name = 'Média de KMs corridos nos últimos {} dias'.format(days)
+        df[column_name] = round(df['distance'].rolling(window=int(days)).mean(), 2)
+        df[['distance', column_name]].plot(figsize=(17, 6))
     finally:
         conn.close()
 

@@ -36,8 +36,13 @@ def mean_kcal_by_sport(sport, days):
 
 
 @app.route('/mean_graph/<days>')
-def mean_graph(days):
-    return crud.mean_graph(days)
+def mean_kcal_by_days_graph(days):
+    return crud.mean_kcal_by_days_graph(days)
+
+
+@app.route('/mean_running_km_by_days/<days>')
+def mean_running_km_by_days(days):
+    return crud.mean_running_km_by_days(days)
 
 
 @app.route('/add', methods=['POST'])
@@ -47,9 +52,9 @@ def add_fit_data():
             "date": "2019-02-02",
             "sport": "run",
             "kcal": "600",
+            "distance": 5,
             "duration": "1:12",
-            "pace": "5:27",
-            "heartrate": "143"
+            "avg_heartrate": "143"
         }
     """
 

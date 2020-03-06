@@ -2,10 +2,12 @@
 
 import os
 
+import matplotlib.pyplot as plt
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 import crud
+import util
 from config import Config
 from models import DataFitness
 from util import get_date, get_duration, get_data
@@ -37,12 +39,22 @@ def mean_kcal_by_sport(sport, days):
 
 @app.route('/mean_graph/<days>')
 def mean_kcal_by_days_graph(days):
-    return crud.mean_kcal_by_days_graph(days)
+    df = crud.mean_kcal_by_days()
+    column_name = 'Média dos últimos {} dias'.format(days)
+    df[column_name] = round(df['kcal'].rolling(window=int(days)).mean(), 2)
+    df[['kcal', column_name]].plot(figsize=(17, 6))
+
+    return util.matplotlib_to_base64(plt)
 
 
 @app.route('/mean_running_km_by_days/<days>')
 def mean_running_km_by_days(days):
-    return crud.mean_running_km_by_days(days)
+    df = crud.mean_running_km_by_days(days)
+    column_name = 'Média de KMs corridos nos últimos {} dias'.format(days)
+    df[column_name] = round(df['distance'].rolling(window=int(days)).mean(), 2)
+    df[['distance', column_name]].plot(figsize=(17, 6))
+
+    return util.matplotlib_to_base64(plt)
 
 
 @app.route('/add', methods=['POST'])

@@ -19,7 +19,10 @@ def all():
 def by_sport(sport):
     try:
         conn = sqlite3.connect('datafitness.db')
-        sql = 'select * from data_fitness where sport = ? order by date, sport'
+        if sport:
+            sql = 'select * from data_fitness where sport = ? order by date, sport'
+        else:
+            sql = 'select * from data_fitness order by date, sport'
         df = pd.read_sql(sql, conn, params={sport}, index_col='id')
     finally:
         conn.close()

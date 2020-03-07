@@ -19,26 +19,36 @@ SQLAlchemy(app)
 
 @app.route('/', methods=['GET'])
 def get_all():
-    return crud.all()
+    df = crud.all()
+    return df.to_json(orient='records')
 
 
 @app.route('/sport/<sport>', methods=['GET'])
 def by_sport(sport=""):
-    return crud.by_sport(sport)
+    df = crud.by_sport(sport)
+    return df.to_json(orient='records')
 
 
 @app.route('/mean_kcal/<days>')
 def mean_kcal(days):
-    return crud.mean_kcal(days)
+    df = crud.mean_kcal(days)
+    column_name = 'Média dos últimos {} dias'.format(days)
+    df[column_name] = round(df['kcal'].rolling(window=int(days)).mean(), 2)
+
+    return df.to_json(orient='records')
 
 
 @app.route('/mean_kcal/<sport>/<days>')
 def mean_kcal_by_sport(sport, days):
-    return crud.mean_kcal_by_sport(sport, days)
+    df = crud.mean_kcal_by_sport(sport, days)
+    column_name = 'Média dos últimos {} dias em {}'.format(days, sport)
+    df[column_name] = round(df['kcal'].rolling(window=int(days)).mean(), 2)
+
+    return df.to_json(orient='records')
 
 
-@app.route('/mean_graph/<days>')
-def mean_kcal_by_days_graph(days):
+@app.route('/mean_kcal_by_days/<days>')
+def mean_kcal_by_days(days):
     df = crud.mean_kcal_by_days()
     column_name = 'Média dos últimos {} dias'.format(days)
     df[column_name] = round(df['kcal'].rolling(window=int(days)).mean(), 2)
@@ -47,9 +57,19 @@ def mean_kcal_by_days_graph(days):
     return util.matplotlib_to_base64(plt)
 
 
+@app.route('/mean_kcal_by_trained_days/<days>')
+def mean_kcal_by_trained_days(days):
+    df = crud.mean_kcal_by_trained_days()
+    column_name = 'Média dos últimos {} dias de treino'.format(days)
+    df[column_name] = round(df['kcal'].rolling(window=int(days)).mean(), 2)
+    df[['kcal', column_name]].plot(figsize=(17, 6))
+
+    return util.matplotlib_to_base64(plt)
+
+
 @app.route('/mean_running_km_by_days/<days>')
 def mean_running_km_by_days(days):
-    df = crud.mean_running_km_by_days(days)
+    df = crud.mean_running_km_by_days()
     column_name = 'Média de KMs corridos nos últimos {} dias'.format(days)
     df[column_name] = round(df['distance'].rolling(window=int(days)).mean(), 2)
     df[['distance', column_name]].plot(figsize=(17, 6))

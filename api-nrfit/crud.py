@@ -23,20 +23,16 @@ def by_sport(sport):
         conn.close()
 
 
-def mean_kcal(days=7):
+def avg_kcal():
     try:
         conn = sqlite3.connect('datafitness.db')
         sql = 'select * from data_fitness order by date, sport'
-        df = pd.read_sql(sql, conn, index_col='id')
-        column_name = 'Média dos últimos {} dias'.format(days)
-        df[column_name] = round(df['kcal'].rolling(window=int(days)).mean(), 2)
+        return pd.read_sql(sql, conn, index_col='id')
     finally:
         conn.close()
 
-    return df.to_json(orient='records')
 
-
-def mean_kcal_by_sport(sport, days):
+def avg_kcal_by_sport(sport, days):
     try:
         conn = sqlite3.connect('datafitness.db')
         sql = 'select * from data_fitness where sport = ? order by date, sport'
@@ -45,7 +41,7 @@ def mean_kcal_by_sport(sport, days):
         conn.close()
 
 
-def mean_kcal_by_days():
+def avg_kcal_by_days():
     try:
         conn = sqlite3.connect('datafitness.db')
         sql = 'select kcal, date from data_fitness order by date, sport'
@@ -54,7 +50,7 @@ def mean_kcal_by_days():
         conn.close()
 
 
-def mean_kcal_by_trained_days():
+def avg_kcal_by_trained_days():
     try:
         conn = sqlite3.connect('datafitness.db')
         sql = 'select kcal, date from data_fitness where kcal <> 0 order by date, sport'
@@ -63,7 +59,7 @@ def mean_kcal_by_trained_days():
         conn.close()
 
 
-def mean_running_km_by_days():
+def avg_running_km_by_days():
     try:
         conn = sqlite3.connect('datafitness.db')
         sql = 'select distance, date from data_fitness where sport=\'running\' order by date'

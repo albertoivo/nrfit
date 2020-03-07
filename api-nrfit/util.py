@@ -33,10 +33,10 @@ def get_data(info):
 
 def matplotlib_to_base64(plt):
     """
-    Transform a Matplotlib graph to a base 64 url.
+    Transform a Matplotlib graphs to a base 64 url.
 
-    :param plt: The matplotlib graph after plotting it.
-    :return: the matplotlib graph in base64.
+    :param plt: The matplotlib graphs after plotting it.
+    :return: the matplotlib graphs in base64.
     """
     try:
         figfile = BytesIO()

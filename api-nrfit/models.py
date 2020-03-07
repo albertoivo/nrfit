@@ -1,9 +1,9 @@
+import datetime
 from datetime import timedelta
 
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-import datetime
 
 from config import Config
 
@@ -18,13 +18,13 @@ class DataFitness(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     sport = db.Column(db.String(30), nullable=False)
-    date = db.Column(db.Date(), nullable=False)
+    date = db.Column(db.Date(), nullable=False, default=datetime.datetime.now().date())
     kcal = db.Column(db.Integer)
     distance = db.Column(db.Float)
     duration = db.Column(db.Time())
+    avg_heartrate = db.Column(db.Float)
     pace = db.Column(db.Float)
     avg_speed = db.Column(db.Float)
-    avg_heartrate = db.Column(db.Float)
 
     def create(self):
         hour = self.duration.hour

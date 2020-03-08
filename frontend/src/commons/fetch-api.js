@@ -14,8 +14,8 @@ class AppError extends Error {
 function tratarRetornoChamadaApi(resp) {
   if (resp.type !== 'opaque' && !resp.ok && resp.status !== 400) {
     throw new AppError(
-        resp.status,
-        resp.statusText ? resp.statusText : 'Erro não identificado'
+      resp.status,
+      resp.statusText ? resp.statusText : 'Erro não identificado'
     )
   }
 

@@ -15,9 +15,9 @@ function Init() {
   useEffect(componentDidMount(dispatch, state), [])
 
   return (
-      !state.logged_user.id && (
-          <span>Usuário não encontrado!</span>
-      )
+    !state.logged_user.id && (
+      <span>Usuário não encontrado!</span>
+    )
   )
 }
 

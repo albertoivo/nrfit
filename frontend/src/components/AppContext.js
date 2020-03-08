@@ -16,9 +16,9 @@ const useReducerAppHook = (reducer, initialState) => {
 }
 
 export const AppStateProvider = ({reducer, initialState, children}) => (
-    <AppContext.Provider value={useReducerAppHook(reducer, initialState)}>
-      {children}
-    </AppContext.Provider>
+  <AppContext.Provider value={useReducerAppHook(reducer, initialState)}>
+    {children}
+  </AppContext.Provider>
 )
 
 export const useAppState = () => useContext(AppContext)
